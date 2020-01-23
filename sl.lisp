@@ -61,7 +61,6 @@
 (esrap:defrule <conditional> (and OPENBRACKET <condition-with-body> (* <or-bar-conditions>) CLOSEBRACKET)
   (:destructure (lb condition-with-body other-conditions rb)
    (declare (ignore lb rb))
-   (format *standard-output* "condition-with-body ~S~%other-conditions ~S~%" condition-with-body other-conditions)
    `(cond ,condition-with-body ,@other-conditions)))
 
 (esrap:defrule <condition-with-body> (and <condition> (+ <body>))
