@@ -6,4 +6,5 @@
   :components ((:module "source"
                         :pathname "./"
                         :components ((:file "package")
-                                     (:file "sl" :depends-on ("package"))))))
+                                     (:file "sl" :depends-on ("package"))
+                                     (:file "test" :depends-on ("package"))))))
