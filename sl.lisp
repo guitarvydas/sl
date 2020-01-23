@@ -39,14 +39,17 @@
 (esrap:defrule <eof> (esrap:! character))
 |#
 
-(esrap:defrule <sl-definitions> (and (* <ws>) (+ <rule-definition>) (* <ws>) <eof>) (:function second) (:lambda (x) (cons 'progn x)))
+(esrap:defrule <sl-definitions> (and (* <ws>) (+ <rule-definition>) (* <ws>) <eof>)
+  (:function second)
+  (:lambda (x)
+     (cons 'progn x)))
 
 (esrap:defrule <rule-definition> (and EQ <rule-name> (+ <body>))
   (:destructure (eq name body)
    (declare (ignore eq))
    `(defmethod ,name ((p parser)) ,@body)))
 
-(esrap:defrule <body> (or <call-external> <call-rule> <must-see-token> <look-ahead-token> <output> <if>))
+(esrap:defrule <body> (or <call-external> <call-rule> <must-see-token> <look-ahead-token> <output> <conditional>))
 
 (esrap:defrule <call-external> <ident> (:lambda (x) `(call-external p ,(intern (string-upcase x)))))
 (esrap:defrule <call-rule> <rule-name> (:lambda (x) `(call-rule p ,x)))
@@ -55,15 +58,18 @@
 (esrap:defrule <output> (and <output-chars> (* <ws>)) (:function first) (:lambda (x) `(output p ,x)))
 (esrap:defrule <output-chars> (and "'" <not-squote-star> "'") (:function second))
 
-(esrap:defrule <if> (and OPENBRACKET (* <ws>) (+ <body>) (* <else>) CLOSEBRACKET)
-  (:destructure (lb ws then else rb)
-   (declare (ignore lb ws rb))
-   `(cl:if ,@then ,@else)))
+(esrap:defrule <conditional> (and OPENBRACKET <condition-with-body> (* <or-bar-conditions>) CLOSEBRACKET)
+  (:destructure (lb condition-with-body other-conditions rb)
+   (declare (ignore lb rb))
+   (format *standard-output* "condition-with-body ~S~%other-conditions ~S~%" condition-with-body other-conditions)
+   `(cond ,condition-with-body ,@other-conditions)))
 
-(esrap:defrule <else> (and ORBAR (* <ws>) (+ <body>) (* <else>))
-  (:destructure (orbar ws body more-else)
-   (declare (ignore orbar ws))
-   `(,body ,@more-else)))
+(esrap:defrule <condition-with-body> (and <condition> (+ <body>))
+  (:destructure (c blist)
+   `(,c ,@blist)))
+
+(esrap:defrule <or-bar-conditions> (and ORBAR <condition-with-body>) (:function second))
+(esrap:defrule <condition> (or <must-see-token> <look-ahead-token>))
 
 (esrap:defrule <rule-name> (and LT <ident> GT) (:function second) (:lambda (x) (intern (string-upcase x))))
 (esrap:defrule <ident> (and <ident-chars> (* <ws>)) (:function first))
@@ -88,7 +94,8 @@
 (defun parse (str)
   (esrap:parse '<sl-definitions> str))
 
-(defun cl-user::clear ()
+
+(defun cl-user::sl-clear ()
   (esrap::clear-rules)
   (asdf::run-program "rm -rf ~/.cache/common-lisp")
   (ql:quickload :sl))

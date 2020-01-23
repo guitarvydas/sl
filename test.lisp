@@ -1,6 +1,12 @@
 (in-package :sl)
 
 (defparameter *test-string* "
+= <pin-list> 
+  [ :symbol symbol-must-be-nil  | :lpar '{' <ident-list> '}' :rpar ]
+
+= <pin-list2> 
+  [ :symbol symbol-must-be-nil  | :lpar '{' <ident-list> '}' :rpar | :rpar 'second' 'leg']
+
 = <ir> 
 :lpar :string 'kindName : ' print-text nl
               'metaData : \"\"' nl
@@ -18,9 +24,6 @@
 
 = <wiring> 
   :lpar 'wiring : {' <wire-list> '}' :rpar
-
-= <pin-list> 
-  [ :symbol symbol-must-be-nil  | :lpar '{' <ident-list> '}' :rpar ]
 
 = <ident-list> 
   :ident [ ?ident <ident-list>]
