@@ -2,4 +2,4 @@ This is the syntax language, sl (inspired by https://en.wikipedia.org/wiki/S/SL_
 
 testing:
 
-> (sl:parse sl::*test-string*)
+> (sl:parse sl::\*test-string\*)
