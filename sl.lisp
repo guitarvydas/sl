@@ -64,7 +64,7 @@
    (declare (ignore lb rb))
    `(cond ,condition-with-body ,@other-conditions)))
 
-(esrap:defrule <condition-with-body> (and <condition> (+ <body>))
+(esrap:defrule <condition-with-body> (and <condition> (* <body>))
   (:destructure (c blist)
    `(,c ,@blist)))
 
