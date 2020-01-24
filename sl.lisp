@@ -49,7 +49,7 @@
    (declare (ignore eq))
    `(defmethod ,name ((p parser)) ,@body)))
 
-(esrap:defrule <body> (or <call-external> <call-rule> <must-see-token> <look-ahead-token> <output> <conditional>))
+(esrap:defrule <body> (or <call-external> <call-rule> <must-see-token> <look-ahead-token> <output> <conditional> <ok> ))
 
 (esrap:defrule <call-external> <ident> (:lambda (x) `(call-external p #',(intern (string-upcase x)))))
 (esrap:defrule <call-rule> <rule-name> (:lambda (x) `(call-rule p #',x)))
@@ -57,6 +57,7 @@
 (esrap:defrule <look-ahead-token> (and "?" <token>) (:function second) (:lambda (token) `(look-ahead p ,token)))
 (esrap:defrule <output> (and <output-chars> (* <ws>)) (:function first) (:lambda (x) `(output p ,x)))
 (esrap:defrule <output-chars> (and "'" <not-squote-star> "'") (:function second))
+(esrap:defrule <ok> BANG (:constant T))
 
 (esrap:defrule <conditional> (and OPENBRACKET <condition-with-body> (* <or-bar-conditions>) CLOSEBRACKET)
   (:destructure (lb condition-with-body other-conditions rb)
@@ -68,7 +69,7 @@
    `(,c ,@blist)))
 
 (esrap:defrule <or-bar-conditions> (and ORBAR <condition-with-body>) (:function second))
-(esrap:defrule <condition> (or <must-see-token> <look-ahead-token>))
+(esrap:defrule <condition> (or BANG <must-see-token> <look-ahead-token>))
 
 (esrap:defrule <rule-name> (and LT <ident> GT) (:function second) (:lambda (x) (intern (string-upcase x))))
 (esrap:defrule <ident> (and <ident-chars> (* <ws>)) (:function first))
@@ -85,6 +86,7 @@
 (esrap:defrule OPENBRACKET (and "[" (* <ws>)))
 (esrap:defrule CLOSEBRACKET (and "]" (* <ws>)))
 (esrap:defrule ORBAR (and "|" (* <ws>)))
+(esrap:defrule BANG (and "!" (* <ws>)) (:constant T))
 
 
 (esrap:defrule <ws> (or #\Space #\Newline #\Tab))
