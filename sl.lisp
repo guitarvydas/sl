@@ -75,7 +75,7 @@
 (esrap:defrule <ident> (and <ident-chars> (* <ws>)) (:function first))
 (esrap:defrule <ident-chars> (and <ident-first> (* <ident-follow>)) (:text t))
 (esrap:defrule <ident-first> (esrap:character-ranges (#\A #\Z) (#\a #\z)))
-(esrap:defrule <ident-follow> (esrap:character-ranges #\- (#\A #\Z) (#\a #\z) (#\0 #\9)))
+(esrap:defrule <ident-follow> (esrap:character-ranges #\- #\/ (#\A #\Z) (#\a #\z) (#\0 #\9)))
 (esrap:defrule <not-squote-star> (* <not-squote>) (:text t))
 (esrap:defrule <not-squote> (and (esrap:! "'") character))
 (esrap:defrule <token> <ident> (:lambda (id) (intern (string-upcase id) "KEYWORD")))
