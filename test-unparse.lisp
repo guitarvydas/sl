@@ -12,7 +12,7 @@
     ! .first-time <unparse-string>
     ! .wires
     ! .parts <unparse-parts>
-    % skip schem.wiring, since wiring is <unparsed as a function of <unparse-parts
+    % skip schem.wiring, since wiring is unparsed as a function of unparse-parts
 
 = <unparse-inputs>
   :LPAR
