@@ -19,6 +19,7 @@ ident -- call "ident" (externally defined method)
 
 ;; defined in sl.lisp: <ident>, <ws>, COLON, BANG
 
+#|
 (esrap:defrule <unparse-definitions> (and (* <ws>) (+ <unparse-definition>) (* <ws>) <eof>)
   (:function second)
   (:lambda (x) (list 'progn (car x))))
@@ -30,38 +31,40 @@ ident -- call "ident" (externally defined method)
 (esrap:defrule <unparse-rule-name> (and EQ <rule-name>) (:function second))
 
 (esrap:defrule <unparse-body> (and (or <token-emit-kind> <push> <pop-into-id> <dup-into-id> <get-field> <foreach-in-list> <foreach-in-table> <unparse-call-rule> <unparse-call-external>) <unparse-body>)
-  (:destructure (lhs rest)
+  #+nil(:destructure (lhs rest)
    (append lhs rest)))
 
 (esrap:defrule <token-emit-kind> (and COLON <ident>)
-  (:function second)
-  (:lambda (str) `(unparse-emit-token ,(intern (string-upcase str) "KEYWORD"))))
+  #+nil(:function second)
+  #+nil(:lambda (str) `(unparse-emit-token ,(intern (string-upcase str) "KEYWORD"))))
+
 (esrap:defrule <push> (and BANG (or <ident> <get-field>))
-  (:function second)
-  (:lambda (str-or-get)
+  #+nil(:function second)
+  #+nil(:lambda (str-or-get)
     (let ((rhs (if (stringp str-or-get)
                    (intern (string-upcase str-or-get))
                  str-or-get)))
       `(unparse-push u ,rhs))))
 (esrap:defrule <pop-into-id> (and QUESTION <ident>)
-  (:function second)
-  (:lambda (str)
+  #+nil(:function second)
+  #+nil(:lambda (str)
     (let ((id (intern (string-upcase str))))
       `(let ((,id (unparse-pop u)))))))
 (esrap:defrule <dup-into-id> (and QUESTION DOT <ident>)
-  (:function third)
-  (:lambda (str)
+  #+nil(:function third)
+  #+nil(:lambda (str)
     (let ((id (intern (string-upcase str))))
       `(let ((,id (unparse-tos u)))))))
 (esrap:defrule <get-field> (and DOT <ident>)
-  (:function second)
-  (:lambda (str)
+  #+nil(:function second)
+  #+nil(:lambda (str)
     (let ((id (intern (string-upcase str))))
       `(slot-value (unparse-tos u) ',id))))
 (esrap:defrule <foreach-in-list> (and "~" "foreach" (* <ws>) <ident> LBRACE (+ <unparse-body>) RBRACE))
 (esrap:defrule <foreach-in-table> (and "$" "foreach" (* <ws>) <ident> LBRACE (+ <unparse-body>) RBRACE))
 (esrap:defrule <unparse-call-rule> (and LT <ident> GT) (:function second) (:lambda (x) `(unparse-call-rule u #',x)))
 (esrap:defrule <unparse-call-external> (and "@" <ident>) (:function second) (:lambda (x) `(unparse-call-external u #',(intern (string-upcase x)))))
+|#
 
 (defun unparse (str)
 #||#
@@ -73,7 +76,7 @@ ident -- call "ident" (externally defined method)
 #||#
   (esrap:parse '<unparse-definitions> str))
 
-#| raw grammar
+#| raw grammar |#
 
 (esrap:defrule <unparse-definitions> (and (* <ws>) (+ <unparse-definition>) (* <ws>) <eof>))
 
@@ -93,4 +96,4 @@ ident -- call "ident" (externally defined method)
 (esrap:defrule <unparse-call-rule> (and LT <ident> GT))
 (esrap:defrule <unparse-call-external> (and "@" <ident>))
 
-|#
+#| |#

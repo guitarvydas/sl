@@ -29,3 +29,12 @@
 (esrap:defrule RBRACE (and "}" (* <ws>)) (:constant #\}))
 
 
+(defun cl-user::sl-test-all ()
+  (sl:parse sl::*test-string*)
+  (sl:unparse sl::*unparse-test-string*))
+
+(defun cl-user::sl-clear ()
+  (esrap::clear-rules)
+  (asdf::run-program "rm -rf ~/.cache/common-lisp")
+  (ql:quickload :sl)
+  (cl-user::sl-test-all))
