@@ -57,5 +57,5 @@
   (let ((len (length x)))
     (if (< len 2)
         x
-      `( ,(append (first x) (append-lets (rest x))) ))))
+      `( ,(append (first x) (append-lets-helper (rest x))) ))))
 
