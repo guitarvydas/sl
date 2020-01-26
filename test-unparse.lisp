@@ -2,6 +2,18 @@
 
 (defparameter *unparse-test-string*
 "
+= <unparse-inputs>
+  $foreach {
+    <unparse-part>
+  }
+  @send-top
+  :LPAR
+    <unparse-string-list>
+  :RPAR
+")
+
+(defparameter *big-unparse-test-string*
+"
 = <unparse-schematic>
   :schem 
     ! .name <unparse-string> 
@@ -25,9 +37,8 @@
   :RPAR
 
 = <unparse-string-list>
-  ~foreach str {
-  :string
-    ! str
+  ~foreach {
+    :string
     @send-top
   }
 
@@ -37,7 +48,6 @@
   }
 
 = <unparse-part> 
-  ?part
   % wires object remains
     .name <unparse-string>
     .kind <unparse-kind>
