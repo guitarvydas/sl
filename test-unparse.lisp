@@ -2,18 +2,6 @@
 
 (defparameter *unparse-test-string*
 "
-= <unparse-inputs>
-  $foreach {
-    <unparse-part>
-  }
-  @send-top
-  :LPAR
-    <unparse-string-list>
-  :RPAR
-")
-
-(defparameter *big-unparse-test-string*
-"
 = <unparse-schematic>
   :schem 
     ! .name <unparse-string> 
@@ -57,8 +45,8 @@
     .first-time <unparse-string>
 
 = <unparse-parts> % tos=parts-list, tos[2]=wires table
-  ~foreach part {
-    .inputs $foreach pin {
+  ~foreach {
+    .inputs $foreach {
       @find-sink-part-pin-in-wires  % no pop, pushes a wire number
         :indexed-sink @emit-if-indexed-sink  % 3 top items wire#, pin, part ; no popping ; if tos==nil, don't emit anything
       }
