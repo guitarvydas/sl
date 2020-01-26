@@ -6,5 +6,8 @@
   :components ((:module "source"
                         :pathname "./"
                         :components ((:file "package")
-                                     (:file "sl" :depends-on ("package"))
-                                     (:file "test" :depends-on ("package"))))))
+                                     (:file "common" :depends-on ("package"))
+                                     (:file "sl" :depends-on ("package" "common"))
+                                     (:file "unparse" :depends-on ("package" "sl"))
+                                     (:file "test" :depends-on ("package" "sl"))
+                                     (:file "test-unparse" :depends-on ("package""unparse"))))))
