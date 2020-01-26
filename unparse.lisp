@@ -37,7 +37,11 @@ ident -- call "ident" (externally defined method)
 (esrap:defrule <unparse-call-rule> (and LT <ident> GT))
 (esrap:defrule <unparse-call-external> (and "@" <ident>))
 
-
-
-
+(defun unparse (str)
+  (esrap:trace-rule '<unparse-definitions> :recursive t)
+  (esrap:untrace-rule '<ident-first>)
+  (esrap:untrace-rule '<ident-follow>)
+  (esrap:untrace-rule '<ws>)
+  (esrap:untrace-rule '<comment-to-eol>)
+  (esrap:parse '<unparse-definitions> str))
 

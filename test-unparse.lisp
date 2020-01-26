@@ -36,7 +36,7 @@
     <unparse-part>
   }
 
-= <unparse-part 
+= <unparse-part> 
   ?part
   % wires object remains
     .name <unparse-string>
@@ -46,7 +46,7 @@
     .react <unparse-string>
     .first-time <unparse-string>
 
-= <unparse-parts % tos=parts-list, tos[2]=wires table
+= <unparse-parts> % tos=parts-list, tos[2]=wires table
   ~foreach part {
     .inputs $foreach pin {
       @find-sink-part-pin-in-wires  % no pop, pushes a wire number

@@ -77,10 +77,6 @@
 (defun parse (str)
   (esrap:parse '<sl-definitions> str))
 
-(defun unparse (str)
-  (esrap:trace-rule '<unparse-definitions> :recursive t)
-  (esrap:parse '<unparse-definitions> str))
-
 (defun cl-user::sl-clear ()
   (esrap::clear-rules)
   (asdf::run-program "rm -rf ~/.cache/common-lisp")
