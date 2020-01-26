@@ -30,11 +30,32 @@
 
 
 (defun cl-user::sl-test-all ()
-  (sl:parse sl::*test-string*)
-  (sl:unparse sl::*unparse-test-string*))
+  (values
+   (sl:parse sl::*test-string*)
+   (sl:unparse sl::*unparse-test-string*)))
 
 (defun cl-user::sl-clear ()
   (esrap::clear-rules)
   (asdf::run-program "rm -rf ~/.cache/common-lisp")
-  (ql:quickload :sl)
-  (cl-user::sl-test-all))
+  (ql:quickload :sl))
+
+(defun append-lets (x)
+  ;; create a nested list of LETs from a flat list of LETs, eg.
+  ;;; ( (let ((x 1)))
+  ;;;   (let ((y 2)))
+  ;;;   (let ((z 3)) (c)) )
+  ;;; ->
+  ;;; ( (let ((x 1))
+  ;;;     (let ((y 2))
+  ;;;       (let ((z 3))
+  ;;;         (c)))) )
+  ;;;
+  (car (append-lets-helper x)))
+
+  ;;;  ( (let ((x 1))) (let ((y 2))) (let ((z 3)) (c)) ) -> ((LET ((X 1)) (LET ((Y 2)) (LET ((Z 3)) (C)))))
+(defun append-lets-helper (x)
+  (let ((len (length x)))
+    (if (< len 2)
+        x
+      `( ,(append (first x) (append-lets (rest x))) ))))
+
