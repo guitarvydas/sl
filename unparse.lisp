@@ -91,12 +91,11 @@ ident -- call "ident" (externally defined method)
 
 (esrap:defrule <unparse-rule-name> (and EQ LT <ident> GT))
 
-(esrap:defrule <unparse-body> (or <token-emit-kind> <push> <pop-into-id> <dup-into-id> <get-field> <foreach-in-list> <foreach-in-table> <unparse-call-rule> <unparse-call-external>))
+(esrap:defrule <unparse-body> (or <token-emit-kind> <push> <pop> <get-field> <foreach-in-list> <foreach-in-table> <unparse-call-rule> <unparse-call-external>))
 
 (esrap:defrule <token-emit-kind> (and COLON <ident>))
 (esrap:defrule <push> (and BANG (or <ident> <get-field>)))
-(esrap:defrule <pop-into-id> (and QUESTION <ident>))
-(esrap:defrule <dup-into-id> (and QUESTION DOT <ident>))
+(esrap:defrule <pop> (and MINUS))
 (esrap:defrule <get-field> (and DOT <ident>))
 (esrap:defrule <foreach-in-list> (and "~" "foreach" (* <ws>) <ident> LBRACE (+ <unparse-body>) RBRACE))
 (esrap:defrule <foreach-in-table> (and "$" "foreach" (* <ws>) <ident> LBRACE (+ <unparse-body>) RBRACE))

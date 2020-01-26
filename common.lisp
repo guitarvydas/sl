@@ -27,6 +27,7 @@
 (esrap:defrule DOT (and "." (* <ws>)) (:constant #\.))
 (esrap:defrule LBRACE (and "{" (* <ws>)) (:constant #\{))
 (esrap:defrule RBRACE (and "}" (* <ws>)) (:constant #\}))
+(esrap:defrule MINUS (and "-" (* <ws>)) (:constant #\-))
 
 
 (defun cl-user::sl-test-all ()
