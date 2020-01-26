@@ -29,7 +29,7 @@ ident -- call "ident" (externally defined method)
 (esrap:defrule <unparse-rule-name> (and EQ <rule-name>) (:function second))
 
 ;; each of these must return a (LET ()) environment even if there are no new bindings, e.g. pop-> (let (...))
-(esrap:defrule <unparse-body> (or <token-emit-kind> <push> <get-field> <foreach-in-list> <foreach-in-table> <unparse-call-rule> <unparse-call-external>)) 
+(esrap:defrule <unparse-body> (or <token-emit-kind> <push> <pop> <get-field> <foreach-in-list> <foreach-in-table> <unparse-call-rule> <unparse-call-external>)) 
 
 (esrap:defrule <token-emit-kind> (and COLON <ident>)
   (:function second)
@@ -42,6 +42,11 @@ ident -- call "ident" (externally defined method)
                    (intern (string-upcase str-or-get))
                  str-or-get)))
       `(let () (unparse-push u ,rhs)))))
+
+(esrap:defrule <pop> MINUS
+  (:lambda (x)
+    (declare (ignore x))
+    `(let () (unparse-pop))))
 
 (esrap:defrule <get-field> (and DOT <ident>)
   (:function second)
