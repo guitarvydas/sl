@@ -20,11 +20,12 @@ ident -- call "ident" (externally defined method)
 ;; defined in sl.lisp: <ident>, <ws>, COLON, BANG
 
 (esrap:defrule <unparse-definitions> (and (* <ws>) (+ <unparse-definition>) (* <ws>) <eof>)
-  (:function second))
+  (:function second)
+  (:lambda (x) (cons 'progn x)))
 
 (esrap:defrule <unparse-definition> (and <unparse-rule-name> (+ <unparse-body>))
   (:destructure (name body)
-   `(defmethod ,name ((u unparser)) ,(append-lets body))))
+   `(defmethod ,name ((u parser)) ,(append-lets body))))
 
 (esrap:defrule <unparse-rule-name> (and EQ <rule-name>) (:function second))
 
@@ -86,7 +87,7 @@ ident -- call "ident" (externally defined method)
   (esrap:untrace-rule '<ws>)
   (esrap:untrace-rule '<comment-to-eol>)
 |#
-  (esrap:parse '<unparse-definitions> str))
+  (remove-packages (esrap:parse '<unparse-definitions> str)))
 
 #| raw grammar
 

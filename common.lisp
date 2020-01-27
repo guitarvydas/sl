@@ -60,3 +60,6 @@
         x
       `( ,(append (first x) (append-lets-helper (rest x))) ))))
 
+(defun remove-packages (sexpr)
+  (let ((s (cl:write-to-string sexpr)))
+    (read-from-string (cl-ppcre:regex-replace-all "SL::" s ""))))

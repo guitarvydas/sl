@@ -36,7 +36,7 @@
 (esrap:defrule <token> <ident> (:lambda (id) (intern (string-upcase id) "KEYWORD")))
 
 (defun parse (str)
-  (esrap:parse '<sl-definitions> str))
+  (remove-packages (esrap:parse '<sl-definitions> str)))
 
 (defun cl-user::sl-clear ()
   (esrap::clear-rules)
