@@ -79,11 +79,7 @@ ident -- call "ident" (externally defined method)
   (:lambda (x)
     `(let () (unparse-call-external u #',(mangle (intern (string-upcase x)))))))
 
-<<<<<<< HEAD
 (defun unparse (str &optional (suffix nil))
-=======
-(defun unparse (str &opional (suffix nil))
->>>>>>> pt-20200126b-unparse
 #|
   (esrap:trace-rule '<unparse-definitions> :recursive t)
   (esrap:untrace-rule '<ident-first>)
