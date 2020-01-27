@@ -2,9 +2,16 @@ This is the syntax language, sl (inspired by https://en.wikipedia.org/wiki/S/SL_
 
 testing:
 
-> (sl:parse sl::\*test-string\*)
+> (sl:parse sl::*test-string*)
+> (sl:unparse sl::*unparse-test-string*)
 
-See the raw grammar (PEG) in sl.lisp.
+SL is a DSL for parsing a token-based input string.
+
+UNPARSE is DSL for creating a token-based output from a Lisp object.  Use the unparse DSL to describe how to tokenize an object.  See the comments at the top of unparse.dsl
+
+
+
+See the raw SL grammar (PEG) in sl.lisp.
 
 Roughly (inexactly):
 

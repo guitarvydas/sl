@@ -1,10 +1,13 @@
 (defsystem :sl
-  :depends-on (:esrap)
+  :depends-on (:esrap :cl-ppcre)
   :around-compile (lambda (next)
                     (proclaim '(optimize (debug 3) (safety 3) (speed 0)))
                     (funcall next))
   :components ((:module "source"
                         :pathname "./"
                         :components ((:file "package")
-                                     (:file "sl" :depends-on ("package"))
-                                     (:file "test" :depends-on ("package"))))))
+                                     (:file "common" :depends-on ("package"))
+                                     (:file "sl" :depends-on ("package" "common"))
+                                     (:file "unparse" :depends-on ("package" "sl"))
+                                     (:file "test" :depends-on ("package" "sl"))
+                                     (:file "test-unparse" :depends-on ("package""unparse"))))))
