@@ -25,7 +25,7 @@ ident -- call "ident" (externally defined method)
 
 (esrap:defrule <unparse-definition> (and <unparse-rule-name> (+ <unparse-body>))
   (:destructure (name body)
-   `(defmethod ,name ((u parser)) ,(append-lets body))))
+   `(defmethod ,(mangle name) ((u parser)) ,(append-lets body))))
 
 (esrap:defrule <unparse-rule-name> (and EQ <rule-name>) (:function second))
 
@@ -72,14 +72,14 @@ ident -- call "ident" (externally defined method)
 (esrap:defrule <unparse-call-rule> (and LT <ident> GT)
   (:function second)
   (:lambda (x)
-    `(let () (unparse-call-rule u #',(intern (string-upcase x))))))
+    `(let () (unparse-call-rule u #',(mangle (intern (string-upcase x)))))))
 
 (esrap:defrule <unparse-call-external> (and "@" <ident>)
   (:function second)
   (:lambda (x)
     `(let () (unparse-call-external u #',(intern (string-upcase x))))))
 
-(defun unparse (str)
+(defun unparse (str &optional (suffix nil))
 #|
   (esrap:trace-rule '<unparse-definitions> :recursive t)
   (esrap:untrace-rule '<ident-first>)
@@ -87,6 +87,7 @@ ident -- call "ident" (externally defined method)
   (esrap:untrace-rule '<ws>)
   (esrap:untrace-rule '<comment-to-eol>)
 |#
+  (setf *suffix* suffix)
   (remove-packages (esrap:parse '<unparse-definitions> str)))
 
 #| raw grammar

@@ -8,12 +8,12 @@
 (esrap:defrule <rule-definition> (and EQ <rule-name> (+ <body>))
   (:destructure (eq name body)
    (declare (ignore eq))
-   `(defmethod ,name ((p parser)) ,@body)))
+   `(defmethod ,(mangle name) ((p parser)) ,@body)))
 
 (esrap:defrule <body> (or <call-external> <call-rule> <must-see-token> <look-ahead-token> <output> <conditional> <ok> ))
 
 (esrap:defrule <call-external> <ident> (:lambda (x) `(call-external p #',(intern (string-upcase x)))))
-(esrap:defrule <call-rule> <rule-name> (:lambda (x) `(call-rule p #',x)))
+(esrap:defrule <call-rule> <rule-name> (:lambda (x) `(call-rule p #',(mangle-name x)))
 (esrap:defrule <must-see-token> (and ":" <token>) (:function second) (:lambda (token) `(must-see p ,token)))
 (esrap:defrule <look-ahead-token> (and "?" <token>) (:function second) (:lambda (token) `(look-ahead p ,token)))
 (esrap:defrule <output> (and <output-chars> (* <ws>)) (:function first) (:lambda (x) `(output p ,x)))
@@ -35,8 +35,16 @@
 (esrap:defrule <rule-name> (and LT <ident> GT) (:function second) (:lambda (x) (intern (string-upcase x))))
 (esrap:defrule <token> <ident> (:lambda (id) (intern (string-upcase id) "KEYWORD")))
 
-(defun parse (str)
+(defparameter *suffix* nil)
+
+(defun parse (str &optional (suffix nil))
+  (setf *suffix* suffix)
   (remove-packages (esrap:parse '<sl-definitions> str)))
+
+(defun mangle (sym)
+  (if *suffix*
+      (intern (format nil "~A~A" (symbol-name sym) *suffix*))
+    sym))
 
 (defun cl-user::sl-clear ()
   (esrap::clear-rules)
