@@ -13,7 +13,7 @@
 (esrap:defrule <body> (or <call-external> <call-rule> <must-see-token> <look-ahead-token> <output> <conditional> <ok> ))
 
 (esrap:defrule <call-external> <ident> (:lambda (x) `(call-external p #',(intern (string-upcase x)))))
-(esrap:defrule <call-rule> <rule-name> (:lambda (x) `(call-rule p #',(mangle-name x))))
+(esrap:defrule <call-rule> <rule-name> (:lambda (x) `(call-rule p #',(mangle x))))
 (esrap:defrule <must-see-token> (and ":" <token>) (:function second) (:lambda (token) `(must-see p ,token)))
 (esrap:defrule <look-ahead-token> (and "?" <token>) (:function second) (:lambda (token) `(look-ahead p ,token)))
 (esrap:defrule <output> (and <output-chars> (* <ws>)) (:function first) (:lambda (x) `(output p ,x)))
