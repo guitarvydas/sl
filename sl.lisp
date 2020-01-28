@@ -8,12 +8,15 @@
 (esrap:defrule <rule-definition> (and EQ <rule-name> (+ <body>))
   (:destructure (eq name body)
    (declare (ignore eq))
-   `(defmethod ,(mangle name) ((p parser)) ,@body)))
+   `(defmethod ,(mangle name) ((p parser) &optional (depth 0))
+      (let ((current-method ',(mangle name)))
+        (in-rule p depth current-method)
+        ,@body))))
 
 (esrap:defrule <body> (or <call-external> <call-rule> <must-see-token> <look-ahead-token> <output> <conditional> <ok> ))
 
-(esrap:defrule <call-external> <ident> (:lambda (x) `(call-external p #',(intern (string-upcase x)))))
-(esrap:defrule <call-rule> <rule-name> (:lambda (x) `(call-rule p #',(mangle x))))
+(esrap:defrule <call-external> <ident> (:lambda (x) `(call-external p #',(intern (string-upcase x)) depth current-method)))
+(esrap:defrule <call-rule> <rule-name> (:lambda (x) `(call-rule p #',(mangle x) depth current-method)))
 (esrap:defrule <must-see-token> (and ":" <token>) (:function second) (:lambda (token) `(must-see p ,token)))
 (esrap:defrule <look-ahead-token> (and "?" <token>) (:function second) (:lambda (token) `(look-ahead p ,token)))
 (esrap:defrule <output> (and <output-chars> (* <ws>)) (:function first) (:lambda (x) `(output p ,x)))

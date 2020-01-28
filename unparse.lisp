@@ -4,14 +4,15 @@
 
 = id  -- define a rule, check that 1 item is on the stack
 : id  -- send id as a token kind with nothing as its token-text
-! id  -- push id onto stack, pop id
-? id  -- pop into id
 . id  -- (push field "id" of top item on stack) onto stack
 $foreach id -- map through list, binding each successive element to id
 #foreach id -- map through table, binding each successive element to id
 <id> -- call "id" (internally defined rule method)
 ident -- call "ident" (externally defined method)
 & N   -- dup Nth (1-9, tos=1) item to tos
+-     -- pop main stack
+> id  -- pop tos and push to named stack called id - all field accesses will be from this stackb
+^ id  -- pop top of named stack called id
 |#
 
 
@@ -26,7 +27,7 @@ ident -- call "ident" (externally defined method)
 (esrap:defrule <unparse-rule-name> (and EQ <rule-name>) (:function second))
 
 ;; each of these must return a (LET ()) environment even if there are no new bindings, e.g. pop-> (let (...))
-(esrap:defrule <unparse-body> (or <token-emit-kind> <push> <pop> <get-field> <foreach-in-list> <foreach-in-table> <unparse-call-rule> <unparse-call-external> <dupN>)) 
+(esrap:defrule <unparse-body> (or <token-emit-kind> <push> <pop> <get-field> <foreach-in-list> <foreach-in-table> <unparse-call-rule> <unparse-call-external> <dupN> <push-to-named-stack> <pop-named-stack>)) 
 
 (esrap:defrule <dupN> (and AMPERSAND DIGIT1to9)
   (:function second)
@@ -37,6 +38,19 @@ ident -- call "ident" (externally defined method)
   (:function second)
   (:lambda (str) `(let () (unparse-emit-token u ,(intern (string-upcase str) "KEYWORD")))))
 
+(esrap:defrule <push-to-named-stack> (and GT <ident>)
+  (:function second)
+  (:lambda (id)
+    (let ((temp (gensym "TEMP")))
+      `(let ((,temp (unparse-pop u)))
+         (esrap-push-named u ,id )))))
+
+(esrap:defrule <pop-named-stack> (and CARET <ident>)
+  (:function second)
+  (:lambda (id)
+    `(let ()
+       (esrap-pop-named u ,id))))
+  
 (esrap:defrule <push> (and BANG (or <ident> <get-field>))
   (:function second)
   (:lambda (str-or-get)
@@ -90,24 +104,3 @@ ident -- call "ident" (externally defined method)
 |#
   (setf *suffix* suffix)
   (remove-packages (esrap:parse '<unparse-definitions> str)))
-
-#| raw grammar
-
-(esrap:defrule <unparse-definitions> (and (* <ws>) (+ <unparse-definition>) (* <ws>) <eof>))
-
-(esrap:defrule <unparse-definition> (and <unparse-rule-name> (+ <unparse-body>)))
-
-(esrap:defrule <unparse-rule-name> (and EQ LT <ident> GT))
-
-(esrap:defrule <unparse-body> (or <token-emit-kind> <push> <pop> <get-field> <foreach-in-list> <foreach-in-table> <unparse-call-rule> <unparse-call-external>))
-
-(esrap:defrule <token-emit-kind> (and COLON <ident>))
-(esrap:defrule <push> (and BANG (or <ident> <get-field>)))
-(esrap:defrule <pop> (and MINUS))
-(esrap:defrule <get-field> (and DOT <ident>))
-(esrap:defrule <foreach-in-list> (and "~" "foreach" (* <ws>) <ident> LBRACE (+ <unparse-body>) RBRACE))
-(esrap:defrule <foreach-in-table> (and "$" "foreach" (* <ws>) <ident> LBRACE (+ <unparse-body>) RBRACE))
-(esrap:defrule <unparse-call-rule> (and LT <ident> GT))
-(esrap:defrule <unparse-call-external> (and "@" <ident>))
-
-|#

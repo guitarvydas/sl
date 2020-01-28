@@ -8,6 +8,7 @@
 (esrap:defrule <not-squote> (and (esrap:! "'") character))
 (esrap:defrule LT (and "<" (* <ws>)) (:constant #\<))
 (esrap:defrule GT (and ">" (* <ws>)) (:constant #\>))
+(esrap:defrule CARET (and ">" (* <ws>)) (:constant #\^))
 (esrap:defrule EQ (and "=" (* <ws>)) (:constant #\=))
 (esrap:defrule OPENBRACKET (and "[" (* <ws>)) (:constant #\[))
 (esrap:defrule CLOSEBRACKET (and "]" (* <ws>)) (:constant #\]))
