@@ -14,6 +14,7 @@
 (esrap:defrule ORBAR (and "|" (* <ws>)) (:constant #\|))
 (esrap:defrule BANG (and "!" (* <ws>)) (:constant #\!))
 (esrap:defrule COLON (and ":" (* <ws>)) (:constant #\:))
+(esrap:defrule AMPERSAND (and "&" (* <ws>)) (:constant #\&))
 
 
 (esrap:defrule <ws> (or <comment-to-eol> #\Space #\Newline #\Tab) (:constant #\Space))
@@ -22,7 +23,7 @@
 
 (esrap:defrule <not-percent-nor-eol> (and (esrap:! "%") (esrap:! #\Newline) character))
 
-(esrap:defrule DIGIT2to9 (and (esrap:character-ranges (#\2 #\9)) (* <ws>)) (:function first) (:text t))
+(esrap:defrule DIGIT1to9 (and (esrap:character-ranges (#\1 #\9)) (* <ws>)) (:function first) (:text t))
 (esrap:defrule QUESTION (and "?" (* <ws>)) (:constant #\?))
 (esrap:defrule DOT (and "." (* <ws>)) (:constant #\.))
 (esrap:defrule LBRACE (and "{" (* <ws>)) (:constant #\{))

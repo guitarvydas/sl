@@ -3,21 +3,17 @@
 #|
 
 = id  -- define a rule, check that 1 item is on the stack
-=N id -- define a rule, check that N [2-9] items are on the stack
 : id  -- send id as a token kind with nothing as its token-text
 ! id  -- push id onto stack, pop id
 ? id  -- pop into id
-?. id -- dup tos into id, no pop
 . id  -- (push field "id" of top item on stack) onto stack
 $foreach id -- map through list, binding each successive element to id
 #foreach id -- map through table, binding each successive element to id
-<id> -- call "id" (internally defined rule)
+<id> -- call "id" (internally defined rule method)
 ident -- call "ident" (externally defined method)
-
+& N   -- dup Nth (1-9, tos=1) item to tos
 |#
 
-
-;; defined in sl.lisp: <ident>, <ws>, COLON, BANG
 
 (esrap:defrule <unparse-definitions> (and (* <ws>) (+ <unparse-definition>) (* <ws>) <eof>)
   (:function second)
@@ -32,7 +28,7 @@ ident -- call "ident" (externally defined method)
 ;; each of these must return a (LET ()) environment even if there are no new bindings, e.g. pop-> (let (...))
 (esrap:defrule <unparse-body> (or <token-emit-kind> <push> <pop> <get-field> <foreach-in-list> <foreach-in-table> <unparse-call-rule> <unparse-call-external> <dupN>)) 
 
-(esrap:defrule <dupN> (and AMPERSAND DIGIT2to9)
+(esrap:defrule <dupN> (and AMPERSAND DIGIT1to9)
   (:function second)
   (:lambda (str-n)
     `(let () (unparse-dupn u ,(parse-integer str-n)))))
