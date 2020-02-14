@@ -33,7 +33,7 @@
    `(,c ,@blist)))
 
 (esrap:defrule <or-bar-conditions> (and ORBAR <condition-with-body>) (:function second))
-(esrap:defrule <condition> (or BANG <must-see-token> <look-ahead-token>))
+(esrap:defrule <condition> (or <ok> <must-see-token> <look-ahead-token>))
 
 (esrap:defrule <rule-name> (and LT <ident> GT) (:function second) (:lambda (x) (intern (string-upcase x))))
 (esrap:defrule <token> <ident> (:lambda (id) (intern (string-upcase id) "KEYWORD")))
@@ -41,6 +41,7 @@
 (defparameter *suffix* nil)
 
 (defun parse (str &optional (suffix nil))
+(format *standard-output* "~&sl parsing~%")
   (setf *suffix* suffix)
   (remove-packages (esrap:parse '<sl-definitions> str)))
 
